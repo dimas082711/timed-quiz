@@ -1,136 +1,159 @@
-// when i click start button quiz starts with 60 sec time
 
-//show timer on screen 60 sec
-
-//else  subtract 10 sec
-// when timer runs out alert your score is
-// quiz questions Capitals of States
-var startBtnEl = document.querySelector(".start-btn");
-var viewScoreBtnEl = document.querySelector(".view-score");
-var questionsEl = document.querySelector("#questions");
-var timerEl =document.querySelector("#time");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+var score = 0;
+var counter = 60 ;
+var highscore = localStorage.getItem("highscore");
+var startBtnEl = document.getElementById("start");
+var answerBtnEl = document.getElementById("answer-btns");
+var questionsEl = document.getElementById("question");
+var questionBoxEl = document.getElementById("question-box");
+var titleEl = document.getElementById("title");
+var bodyEl = document.getElementById("text");
+var boxEl = document.getElementById("main-box");
+var interval;
+var currentQuestionIndex
 
 var questions = [
     {
         question: "What is the capital of Massachusetts",
-        answers: {
-            1: "Westfield",
-            2: "Springfield",
-            3: "Russel",
-            4: "Boston"
-        },
-        correctAnswer: "4"
+        answers: [  
+            {text: "Westfield", correct: false },
+            {text: "Springfield", correct: false },
+            {text: "Russel", correct: false },
+            {text: "Boston", correct: true }
+    ]
+        
     },
     {
         question: "What is the capital of California",
-        answers: {
-            1: "Fresno",
-            2: "Sacramento",
-            3: "San Francisco",
-            4: "San Diego"
-        },
-        correctAnswer: "2"
+        answers: [  
+            {text: "Fresno", correct: false },
+            {text: "Sacramento", correct: true },
+            {text: "San Francisco", correct: false},
+            {text: "San Diego", correct: false},
+        ]
+        
     },
     {
         question: "What is the capital of Florida",
-        answers: {
-            1: "Tallahasse",
-            2: "Miami",
-            3: "Montgomery",
-            4: "Boston"
-        },
-        correctAnswer: "1"
+        answers: [ 
+            {text: "Tallahasse", correct: true },
+            {text: "Miami", correct: false },
+            {text: "Montgomery", correct: false },
+            {text: "Boston", correct: false },
+        ]
+        
     },
     {
         question: "What is the capital of Texas",
-        answers: {
-            1: "Westfield",
-            2: "Austin",
-            3: "Harrisburg",
-            4: "Boston"
-        },
-        correctAnswer: "2"
+        answers: [ 
+           {text: "Westfield", correct: false },
+            {text: "Austin", correct: true },
+            {text: "Harrisburg", correct: false },
+            {text: "Boston", correct: false },
+        ]
+       
     },
-    {
-        question: "What is the capital of Montana",
-        answers: {
-            1: "Altmore",
-            2: "Clanton",
-            3: "Helena",
-            4: "Auburn"
-        },
-        correctAnswer: "3"
-    },
-    {
-        question: "What is the capital of Missouri",
-        answers: {
-            1: "Guntersville",
-            2: "Jefferson City",
-            3: "Greenville",
-            4: "Ozark"
-        },
-        correctAnswer: "2"
-    },
-    {
-        question: "What is the capital of Colorado",
-        answers: {
-            1: "Denver",
-            2: "Cortez",
-            3: "Leadville",
-            4: "Loveland"
-        },
-        correctAnswer: "1"
-    },
-    {
-        question: "What is the capital of Arkansas",
-        answers: {
-            1: "Pine Bluff",
-            2: "Helena",
-            3: "Jonesboro",
-            4: "Little Rock"
-        },
-        correctAnswer: "4"
-    },
-    {
-        question: "What is the capital of Connecticut",
-        answers: {
-            1: "Hartford",
-            2: "Groton",
-            3: "Farmington",
-            4: "Danbury"
-        },
-        correctAnswer: "1"
-    },
-    {
-        question: "What is the capital of Georgia",
-        answers: {
-            1: "Rome",
-            2: "Augusta",
-            3: "Atlanta",
-            4: "Savannah"
-        },
-        correctAnswer: "3"
-    },
+    
 ]
+
+function startQuiz() {
+    boxEl.classList.add("hide");
+    score = 0
+    currentQuestionIndex = 0
+    interval = setInterval(clockTimer, 1000)
+    questionBoxEl.classList.remove("hide")
+    nextQuestion()
+};
+
+function nextQuestion() {
+    resetState()
+    showQuestion(questions[currentQuestionIndex])
+};
+
+function resetState() {
+    while (answerBtnEl.firstChild) {
+        answerBtnEl.removeChild(answerBtnEl.firstChild)
+    }
+};
+
+function showQuestion(question) {
+    questionsEl.innerText = question.question
+    question.answers.forEach(answer => {
+        var button = document.createElement("button")
+        button.innerText = answer.text
+        button.classList.add("btn")
+        if (answer.correct) {
+            button.dataset.correct = answer.correct
+        }
+        button.addEventListener("click", selectAnswer)
+        answerBtnEl.appendChild(button)
+    })
+};
+
+function endQuiz() {
+    clearInterval(interval)
+    counter = 60
+    startBtnEl.innerText = "Restart"
+    boxEl.classList.remove("hide")
+    questionBoxEl.classList.add("hide")
+    username = prompt("Please enter your name to save your score is " + score )
+    if (highscore !== null) {
+        if(score > highscore) {
+            parseInt(localStorage.setItem("highscore", score));
+            localStorage.setItem("username", username);
+        }
+    } else {
+        parseInt(localStorage.setItem("highscore", score));
+        localStorage.setItem("username", username)
+    }
+    titleEl.innerText = "You have reached the end of this quiz! Your final score is " + score + " ! " + "Current Highscore is " + localStorage.getItem("highscore");
+    bodyEl.innerText = "";
+};
+
+function clockTimer() {
+    counter--
+    span = document.getElementById("time");
+    span.innerHTML =  counter;
+    if (counter <= 0 ) {
+        endQuiz()
+    }
+};
+
+function selectAnswer(e) {
+    var selectedBtn = e.target
+    var correct = selectedBtn.dataset.correct
+    Array.from(answerBtnEl.children).forEach(button => {
+        setStatusClass(button, button.dataset.correct)
+    })
+
+    setTimeout(function() {
+        if (correct) {
+            score = score + 10
+        } else  {
+            counter = counter - 15
+        };
+        currentQuestionIndex++
+        if (questions.length > currentQuestionIndex) {
+            nextQuestion()
+        } else {
+            endQuiz()
+        }
+    }, 1000)
+};
+
+function setStatusClass(element, correct) {
+    clearStatusClass(element)
+    if (correct) {
+        element.classList.add("correct")
+    } else {
+        element.classList.add("incorrect")
+    }
+};
+
+function clearStatusClass(element) {
+    element.classList.remove("correct")
+    element.classList.remove("incorrect")
+};
+
+
+startBtnEl.addEventListener("click" , startQuiz);
