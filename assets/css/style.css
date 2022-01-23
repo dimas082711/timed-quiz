@@ -18,11 +18,15 @@ body{
 .container {
     width: 800px;
     max-width: 80%;
+    background-color: lightslategray;
+    padding: 10px;
 }
 .timer {
     display: flex;
     justify-content: right;
+  font-weight: 900;
 }
+
 .btn {
     font-size: 25px;
     font-weight: 500;
@@ -52,7 +56,6 @@ body{
 .btn.incorrect {
     background-color: red;
 }
-
 
 .hide {
     display: none;
