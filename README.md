@@ -3,6 +3,12 @@
 * If questtion is false answer button will turn red
 * If correct button will turn Green
 
+# Quiz Rules
+* Try to answer questions in 60 sec score
+* Correct answers will give u 10 score points
+* Wrong answers will take 15 sec off your timer
+
+
 # Acceptance Criteria
 * GIVEN I am taking a code quiz
 * WHEN I click the start button
