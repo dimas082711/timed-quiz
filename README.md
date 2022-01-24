@@ -22,4 +22,7 @@
 * WHEN the game is over
 * THEN I can save my initials and score
 
- Web site Url [click here](https://dimas082711.github.io/timed-quiz/)
+ # Web site Url [click here](https://dimas082711.github.io/timed-quiz/)
+
+ ![ALT txt](https://i.ibb.co/0h0V2wg/timed-quiz-img.png)
+ 
